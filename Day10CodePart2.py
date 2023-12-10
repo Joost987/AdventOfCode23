@@ -1,3 +1,13 @@
+#note: This code is quite slow, my input took 2.5 minutes to compute. To make it faster you can do the following:
+#When checking the crossings of a point (i,j) and another point that is not on the curve is found,
+#then if the current amount of crossings is even, this new point is interior iff (i,j) is interior
+#and if the current amount of crossings is uneven, the new point will not be interior iff (i,j) is interior.
+#Hence one should keep track of all the points that are found during CheckCrossings that are not on the point
+#and if the amount of crossings to get there is even or odd. Then CheckCrossings can return a list of
+#interior points and a list of exterior points, then do not need to be checked anymore. 
+#I think with this approach only one point for each i and one point for each j needs to be checked,
+#so for a square grid only 2*i points. This should reduce time complexity from O(n^2) to O(n)
+
 import re
 
 def Propagate(pos,previousstep): #This function takes the next step onto our curve
@@ -92,7 +102,7 @@ while True: #iterate until we are back at the starting position and add the poin
     curve.append(pos)
     if pos==startpos:
         break
-    
+
 som=0
 print("calculated curve")
 for i in range(len(gridlist)):
