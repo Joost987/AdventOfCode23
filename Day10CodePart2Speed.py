@@ -1,13 +1,3 @@
-#note: This code is quite slow, my input took 2.5 minutes to compute. To make it faster you can do the following:
-#When checking the crossings of a point (i,j) and another point that is not on the curve is found,
-#then if the current amount of crossings is even, this new point is interior iff (i,j) is interior
-#and if the current amount of crossings is uneven, the new point will not be interior iff (i,j) is interior.
-#Hence one should keep track of all the points that are found during CheckCrossings that are not on the point
-#and if the amount of crossings to get there is even or odd. Then CheckCrossings can return a list of
-#interior points and a list of exterior points, then do not need to be checked anymore. 
-#I think with this approach only one point for each i and one point for each j needs to be checked,
-#so for a square grid only 2*i points. This should reduce time complexity from O(n^2) to O(n)
-
 import re
 
 def Propagate(pos,previousstep): #This function takes the next step onto our curve
@@ -24,12 +14,14 @@ def Propagate(pos,previousstep): #This function takes the next step onto our cur
     pos=(pos[0]+nextstep[0],pos[1]+nextstep[1])
     return pos,nextstep
 
-def CheckCrossings(pos,direction,curve): #This function checks how many crossings there are for a certain point and direction
+def CheckCrossingsList(pos,direction,curve): #This function checks how many crossings there are for a certain point and direction
     (i,j)=pos
     (l,m)=direction
     k=1
     crossings=0
     enteringsymb=""
+    SameAsPos=[pos]
+    notSameAsPos=[]
     while 0<=i+k*l<=len(gridlist) and 0<=j+k*m<=len(gridlist[0]):
         if (i+k*l,j+k*m) in curve:
             if enteringsymb=="" and gridlist[i+k*l][j+k*m] in iddict.keys():
@@ -48,9 +40,18 @@ def CheckCrossings(pos,direction,curve): #This function checks how many crossing
             elif enteringsymb=="" and m==0 and gridlist[i+k*l][j+k*m]=="-":
                 crossings+=1
                 k+=1
-                continue     
+                continue 
+        else:
+            if crossings%2==0:
+                SameAsPos.append((i+k*l,j+k*m)) 
+            else:
+                 notSameAsPos.append((i+k*l,j+k*m))  
         k+=1
-    return crossings
+    if crossings%2==0:
+        return SameAsPos,notSameAsPos
+    else:
+        return notSameAsPos,SameAsPos
+
                 
 
 #The first dictionary translates the symbols into directions
@@ -104,22 +105,9 @@ while True: #iterate until we are back at the starting position and add the poin
         break
 
 som=0
-print("calculated curve")
-for i in range(len(gridlist)):
-    for j in range(len(gridlist[0])):
-        if not (i,j) in curve:
-            interior=True
-            for direction in [(1,0),(0,1),(-1,0),(0,-1)]:
-                if CheckCrossings((i,j),direction,curve)%2==0:
-                    interior=False
-                    #temp=list(gridlist[i]) #replaces exterior points with .
-                    #temp[j]="."
-                   #gridlist[i]="".join(temp)
-                    break
-            som+=interior
-            #if interior:
-                   # temp=list(gridlist[i]) #replaces interior points with 0
-                   # temp[j]="0"
-                    #gridlist[i]="".join(temp)
+for j in range(len(gridlist)):
+    som+=len(CheckCrossingsList((0,j),(1,0),curve)[1])
+
 print(som)
+
 print(len(curve))
