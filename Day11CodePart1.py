@@ -3,7 +3,7 @@ def Dist(galaxy ,  galaxyother):
     temp  =  galaxy
     galaxy = (max(galaxy[0] , galaxyother[0]) , max(galaxy[1] , galaxyother[1]))
     galaxyother = (min(temp[0] , galaxyother[0]) , min(temp[1] , galaxyother[1]))
-    distance = galaxy[0]-galaxyother[0] +galaxy[1]-galaxyother[1]
+    distance = galaxy[0] - galaxyother[0] + galaxy[1] - galaxyother[1]
 
     return distance
 
@@ -12,10 +12,10 @@ def Dist(galaxy ,  galaxyother):
 def ExpandGalaxy(galaxy , expansiondistance = 1):
     for i in range(galaxy[0]):
         if i in rowsexpanded:
-            galaxy = (galaxy[0] +expansiondistance , galaxy[1])
+            galaxy = (galaxy[0] + expansiondistance , galaxy[1])
     for j in range(galaxy[1]):
         if j in columnsexpanded:
-            galaxy = (galaxy[0] , galaxy[1] +expansiondistance)
+            galaxy = (galaxy[0] , galaxy[1] + expansiondistance)
     return galaxy
 
 f = open("Day11Input.txt" , 'r')
