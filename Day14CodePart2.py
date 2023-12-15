@@ -56,7 +56,7 @@ for line in f:
 
 
 loadlst=[]
-initrun=50
+initrun=0 #use this to filter out any part until the cycles begin.
 findperiodrun=1000
 for i in range(initrun):
     biglist=Cycle(biglist)
@@ -66,13 +66,12 @@ for i in range(findperiodrun):
         
     biglistnew=Cycle(biglist)
     load=CalculateLoad(biglist)
-    if loadlst.count(load)==5:
+    if loadlst.count(load)==3:
         indexes=[j for j in range(len(loadlst)) if loadlst[j]==load]
-        print(indexes)
-        if indexes[1]-indexes[0]==indexes[2]-indexes[1]: #note, this part does not actually work correctly lol
+        if indexes[1]-indexes[0]==indexes[2]-indexes[1]: 
             cyclelen=indexes[1]-indexes[0]
-            endpos=(1000000000-initrun)%(indexes[1]-indexes[0])
-            print(loadlst[indexes[0]+endpos],loadlst[endpos],endpos,indexes[0]+endpos+initrun)
+            endpos=(1000000000-initrun-indexes[0])%(indexes[1]-indexes[0])
+            print(loadlst[indexes[0]+endpos],indexes[0]+endpos+initrun)
             break
     loadlst.append(load)
 
